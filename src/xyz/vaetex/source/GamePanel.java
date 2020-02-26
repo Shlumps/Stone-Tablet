@@ -1,10 +1,8 @@
-package xyz.vaetex.source;
+package com.stuff;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import xyz.vaetex.source.entitygroups.*;
-import xyz.vaetex.source.itemgroups.*;
 
 public class GamePanel extends JPanel implements MouseMotionListener {
 	
@@ -12,7 +10,6 @@ public class GamePanel extends JPanel implements MouseMotionListener {
 	private static final long serialVersionUID = 1L; // we won't be using serialization, but eclipse keeps bothering me about it
 	
 	// FIELDS
-	Player player = new Player(this, "TestPlayer", 400, 400);
 	
 	// MOUSE FIELDS
 	private int mouseX;
@@ -29,8 +26,6 @@ public class GamePanel extends JPanel implements MouseMotionListener {
 			public void mousePressed(MouseEvent e) { // this method is called when the mouse is pressed (onClickUpdate methods should be put here)
 				updateMousePosition(e);
 				updateMouseButton(e);
-				
-				player.onClickUpdate();
 			}
 		});
 		
@@ -53,17 +48,19 @@ public class GamePanel extends JPanel implements MouseMotionListener {
 		Thread logicalThread = new Thread(new Runnable() { // logical updates happen here
 			public void run() {
 				while(true) {
-					player.logicalUpdate();
+
 				}
 			}
 		});
 		logicalThread.start();
 	}
 	// BEHAVIORS
+	@Override
 	public void mouseMoved(MouseEvent e) {
 		updateMousePosition(e);
 	}
 	
+	@Override
 	public void mouseDragged(MouseEvent e) {
 		updateMousePosition(e);
 	}
@@ -80,7 +77,6 @@ public class GamePanel extends JPanel implements MouseMotionListener {
 	// GRAPHICAL UPDATES
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		player.graphicalUpdate(g);
 		g.setColor(Color.BLACK);
 		g.drawRect(mouseX-5, mouseY-5, 10, 10);
 	}
@@ -92,4 +88,22 @@ public class GamePanel extends JPanel implements MouseMotionListener {
 	public Dimension getPreferredSize() {return new Dimension(800,800);}
 	
 	// MUTATORS
+	
+	// MAIN METHOD STUFF (TO MAKE LIFE EASIER FOR FILE TRANSPORTATION)
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				createGUI("Test Panel");
+			}
+		});
+	}
+	
+	public static void createGUI(String name) {
+		JFrame f = new JFrame(name);
+		f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		f.add(new GamePanel());
+		f.pack();
+		f.setVisible(true);
+	}
 }
