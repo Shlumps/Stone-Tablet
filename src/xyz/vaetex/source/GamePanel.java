@@ -1,7 +1,7 @@
 /*
  * Programmar: Wyatt Rose
  * 
- * Last Edited: 2/26/20
+ * Last Edited: 2/28/20
  * 
  * Created: 2/5/20
  * 
@@ -23,9 +23,12 @@
  *  Graphics2D methods: https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/java/awt/Graphics2D.html
  */
 
+package Stuff;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.*;
 
 public class GamePanel extends JPanel implements MouseMotionListener { // class that helps making games easier
 	
@@ -36,9 +39,10 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 	private static final int panelSizeY = 800; // ^
 	
 	// FIELDS
+	Entity testObject = new Entity(this);
 	
 	// MOUSE AND KEY FIELDS
-	private int keyCode;
+	private ArrayList<Integer> keysDown;
 	private int mouseX;
 	private int mouseY;
 	private int mouseButton;
@@ -76,8 +80,7 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 
 			@Override
 			public void keyPressed(KeyEvent e) { // called on press
-				updateKeyID(e);
-				System.out.println(e.getKeyCode());
+				
 			}
 
 			@Override
@@ -86,28 +89,15 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 			}
 		});
 		
-		Thread paintThread = new Thread(new Runnable() { // thread devoted to calling repaint (allows for animation)
-			@Override
-			public void run() {
-				while(true) {
-					repaint();
-				}
+		Thread updateThread = new Thread(() -> { // thread devoted to calling repaint (allows for animation)
+			while(true) {
+				repaint();
 			}
 		});
-		paintThread.start();
-		
-		Thread logicalThread = new Thread(new Runnable() { // thread devoted to non-graphical processes (second main method)
-			@Override
-			public void run() {
-				while(true) {
-
-				}
-			}
-		});
-		logicalThread.start();
+		updateThread.start();
 	}
 	
-	// MOUSE AND KEY METHODS
+	// MOUSE MOVEMENT METHODS
 	@Override
 	public void mouseMoved(MouseEvent e) { // called when mouse is moved
 		updateMousePosition(e);
@@ -123,26 +113,35 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 		mouseY = e.getY();
 	}
 	
+	// INPUT UPDATE METHODS
 	public void updateMouseButton(MouseEvent e) { // updates GamePanel's mouseButton field
 		mouseButton = e.getButton();
 	}
-	
-	public void updateKeyID(KeyEvent e) {
-		keyCode = e.getID();
+
+	public void updateKeyPressed(KeyEvent e) {
+		if(!keysDown.contains(e.getKeyCode())) {
+			keysDown.add(e.getKeyCode());
+		}
+	}
+
+	public void updateKeyReleased(KeyEvent e) {
+		//keysDown.remove();
 	}
 	
 	// GRAPHICAL UPDATES
 	@Override
-	public void paintComponent(Graphics graphics) { // called when repaint() is called, all graphical updates are done here (refer to paintThread)
+	public void paintComponent(Graphics graphics) { // called when repaint() is called, all graphical and passive updates are done here (refer to paintThread)
 		super.paintComponent(graphics);
 		Graphics2D g = (Graphics2D)graphics; // allows for Graphics2D painting
+		testObject.logicalUpdate();
+		testObject.graphicalUpdate(g);
 	}
 	
 	// ACCESSORS
 	public int getMouseX() {return mouseX;}
 	public int getMouseY() {return mouseY;}
 	public int getMouseButton() {return mouseButton;}
-	public int getKeyCode() {return keyCode;}
+	public ArrayList<Integer> getKeysDown() {return keysDown;}
 	public Dimension getPreferredSize() {return new Dimension(panelSizeX,panelSizeY);}
 	
 	// MUTATORS
