@@ -1,7 +1,7 @@
 /*
  * Programmar: Wyatt Rose
  * 
- * Last Edited: 2/28/20
+ * Last Edited: 2/29/20
  * 
  * Created: 2/5/20
  * 
@@ -9,7 +9,7 @@
  * keyboad and mouse inputs as well as graphical updates. It is fairly easy to
  * use and is much more tuned to game creation than DrawingPanel.
  * 
- * KeyCodes: https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/java/awt/event/KeyEvent.html
+ * KeyCodes: https://docs.oracle.com/en/java/javase/12/docs/api/constant-values.html#java.awt.event.KeyEvent.VK_0
  * Graphics2D documentation: https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/java/awt/Graphics2D.html
  */
 
@@ -137,6 +137,17 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 		super.paintComponent(graphics);
 		Graphics2D g = (Graphics2D)graphics; // allows for Graphics2D painting
 	    g.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)); // turns on antialiasing
+	    
+	    // put your passive updates here
+	}
+	
+	// EASY METHODS
+	public boolean isKeyPressed(int keyCode) {
+		return keysDown.contains(Integer.valueOf(keyCode));
+	}
+	
+	public boolean isButtonPressed(int button) {
+		return mouseButtonsDown.contains(Integer.valueOf(button));
 	}
 	
 	// ACCESSORS
