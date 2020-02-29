@@ -13,10 +13,14 @@
  * Graphics2D documentation: https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/java/awt/Graphics2D.html
  */
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import java.util.*;
+package Stuff;
+
+import java.awt.*; // used for graphics
+import java.awt.event.*; // used for all the listeners
+import java.awt.geom.*; // used for better graphics
+
+import javax.swing.*; // used for jFrame
+import java.util.*; // used for various operations
 
 public class GamePanel extends JPanel implements MouseMotionListener { // class that helps making games easier
 	
@@ -77,12 +81,12 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 			}
 		});
 		
-		Thread updateThread = new Thread(() -> { // thread devoted to calling repaint (allows for animation)
+		Thread paintThread = new Thread(() -> { // thread devoted to calling repaint (allows for animation)
 			while(true) {
 				repaint();
 			}
 		});
-		updateThread.start();
+		paintThread.start();
 	}
 	
 	// MOUSE MOVEMENT METHODS
@@ -120,9 +124,10 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 	
 	// GRAPHICAL UPDATES
 	@Override
-	public void paintComponent(Graphics graphics) { // called when repaint() is called, all graphical and passive updates are done here (refer to paintThread)
+	public void paintComponent(Graphics graphics) { // called when repaint()* is called, all graphical and passive updates are done here (*refer to paintThread)
 		super.paintComponent(graphics);
 		Graphics2D g = (Graphics2D)graphics; // allows for Graphics2D painting
+	    g.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)); // turns on antialiasing
 	}
 	
 	// ACCESSORS
