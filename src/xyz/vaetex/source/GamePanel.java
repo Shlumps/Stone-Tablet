@@ -6,21 +6,11 @@
  * Created: 2/5/20
  * 
  * Descripton: GamePanel is a class that helps making games easier by handling
- * keyboad and mouse inputs as well as handling graphical updates.
+ * keyboad and mouse inputs as well as graphical updates. It is fairly easy to
+ * use and is much more tuned to game creation than DrawingPanel.
  * 
- * Features:
- * 	1. Easy Frame and Panel Creation
- * 	2. Easy use of graphical updates
- * 	3. Easy use of mouseListener methods
- * 	4. Easy use of mouseMotionListener methods
- * 	5. Easy use of keyListener methods
- * 	6. Easily add your own objects by putting them in the FIELDS section
- * 	7. A second main thread for people that don't like event based programming
- * 	8. GamePanel is 100% better than DrawingPanel for game creation
- * 
- * Helpful Links:
- * 	Key IDs: https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/java/awt/event/KeyEvent.html
- *  Graphics2D methods: https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/java/awt/Graphics2D.html
+ * KeyCodes: https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/java/awt/event/KeyEvent.html
+ * Graphics2D documentation: https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/java/awt/Graphics2D.html
  */
 
 package Stuff;
@@ -33,19 +23,19 @@ import java.util.*;
 public class GamePanel extends JPanel implements MouseMotionListener { // class that helps making games easier
 	
 	// CLASS CONSTANTS
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L; // ignore this unless you're using serialization for some reason
 	private static final String frameName = "GamePanel";
-	private static final int panelSizeX = 800; // size of panel and frame
+	private static final int panelSizeX = 800; // preferred size of panel and frame
 	private static final int panelSizeY = 800; // ^
 	
-	// FIELDS
-	Entity testObject = new Entity(this);
+	// GAME ENTITY FIELDS
+	
 	
 	// MOUSE AND KEY FIELDS
-	private ArrayList<Integer> keysDown;
 	private int mouseX;
 	private int mouseY;
 	private int mouseButton;
+	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
 	
 	// CONSTRUCTORS
 	public GamePanel() {
@@ -80,12 +70,12 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 
 			@Override
 			public void keyPressed(KeyEvent e) { // called on press
-				
+				updateKeyPressed(e);
 			}
 
 			@Override
 			public void keyReleased(KeyEvent e) { // called on release
-				
+				updateKeyReleased(e);
 			}
 		});
 		
@@ -108,24 +98,26 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 		updateMousePosition(e);
 	}
 	
+	// INPUT UPDATE METHODS
 	public void updateMousePosition(MouseEvent e) { // updates GamePanel's mouse fields
 		mouseX = e.getX();
 		mouseY = e.getY();
 	}
 	
-	// INPUT UPDATE METHODS
 	public void updateMouseButton(MouseEvent e) { // updates GamePanel's mouseButton field
 		mouseButton = e.getButton();
 	}
-
-	public void updateKeyPressed(KeyEvent e) {
-		if(!keysDown.contains(e.getKeyCode())) {
-			keysDown.add(e.getKeyCode());
+	
+	public void updateKeyPressed(KeyEvent e) { // updates the keysDown arrayList
+		if(!keysDown.contains(Integer.valueOf(e.getKeyCode()))) {
+			keysDown.add(Integer.valueOf(e.getKeyCode()));
 		}
 	}
-
-	public void updateKeyReleased(KeyEvent e) {
-		//keysDown.remove();
+	
+	public void updateKeyReleased(KeyEvent e) { // updates the keysDown arraylist
+		if(keysDown.contains(Integer.valueOf(e.getKeyCode()))) {
+			keysDown.remove(Integer.valueOf(e.getKeyCode()));
+		}
 	}
 	
 	// GRAPHICAL UPDATES
@@ -133,8 +125,6 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 	public void paintComponent(Graphics graphics) { // called when repaint() is called, all graphical and passive updates are done here (refer to paintThread)
 		super.paintComponent(graphics);
 		Graphics2D g = (Graphics2D)graphics; // allows for Graphics2D painting
-		testObject.logicalUpdate();
-		testObject.graphicalUpdate(g);
 	}
 	
 	// ACCESSORS
@@ -145,6 +135,7 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 	public Dimension getPreferredSize() {return new Dimension(panelSizeX,panelSizeY);}
 	
 	// MUTATORS
+
 	
 	// MAIN METHOD AND FRAME CREATION
 	public static void main(String[] args) {
