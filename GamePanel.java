@@ -13,8 +13,6 @@
  * Graphics2D documentation: https://docs.oracle.com/en/java/javase/12/docs/api/java.desktop/java/awt/Graphics2D.html
  */
 
-package Stuff;
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
