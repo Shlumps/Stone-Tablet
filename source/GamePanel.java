@@ -17,7 +17,7 @@ package Stuff;
 
 import java.awt.*; // used for graphics
 import java.awt.event.*; // used for all the listeners
-import java.awt.geom.*; // used for better graphics
+import java.awt.geom.*; // used for better graphics (might not need it if all graphics are done seperately in their own classes)
 
 import javax.swing.*; // used for jFrame
 import java.util.*; // used for various operations
@@ -36,7 +36,7 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 	// MOUSE AND KEY FIELDS
 	private int mouseX;
 	private int mouseY;
-	private int mouseButton;
+	private ArrayList<Integer> mouseButtonsDown = new ArrayList<Integer>();
 	private ArrayList<Integer> keysDown = new ArrayList<Integer>();
 	
 	// CONSTRUCTORS
@@ -55,12 +55,13 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 			@Override
 			public void mousePressed(MouseEvent e) { // called on press
 				updateMousePosition(e);
-				updateMouseButton(e);
+				updateMousePressed(e);
 			}
 			
 			@Override
 			public void mouseReleased(MouseEvent e) { // called on release
 				updateMousePosition(e);
+				updateMouseReleased(e);
 			}
 		});
 		
@@ -106,8 +107,16 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 		mouseY = e.getY();
 	}
 	
-	public void updateMouseButton(MouseEvent e) { // updates GamePanel's mouseButton field
-		mouseButton = e.getButton();
+	public void updateMousePressed(MouseEvent e) { // updates the mouseButtonsDown arrayList
+		if(!mouseButtonsDown.contains(Integer.valueOf(e.getButton()))) {
+			mouseButtonsDown.add(Integer.valueOf(e.getButton()));
+		}
+	}
+	
+	public void updateMouseReleased(MouseEvent e) { // updates the mouseButtonsDown arrayList
+		if(mouseButtonsDown.contains(Integer.valueOf(e.getButton()))) {
+			mouseButtonsDown.remove(Integer.valueOf(e.getButton()));
+		}
 	}
 	
 	public void updateKeyPressed(KeyEvent e) { // updates the keysDown arrayList
@@ -133,7 +142,7 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 	// ACCESSORS
 	public int getMouseX() {return mouseX;}
 	public int getMouseY() {return mouseY;}
-	public int getMouseButton() {return mouseButton;}
+	public ArrayList<Integer> getMouseButtonsDown() {return mouseButtonsDown;}
 	public ArrayList<Integer> getKeysDown() {return keysDown;}
 	public Dimension getPreferredSize() {return new Dimension(panelSizeX,panelSizeY);}
 	
