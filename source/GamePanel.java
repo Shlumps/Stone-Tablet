@@ -178,3 +178,20 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
 		f.setVisible(true);
 	}
 }
+
+
+	public void drawBody(Graphics2D g) {
+		g.setPaint(carColor);
+		g.fill(new Rectangle2D.Double(getXStart(),getYStart(),100,60));
+	}
+
+	public void drawWheels(Graphics2D g) {
+		g.setPaint(new Color(0,0,0,255));
+		g.fill(new Ellipse2D.Double(getXStart()+5,getYStart()+45,30,30));
+		g.fill(new Ellipse2D.Double(getXStart()+65,getYStart()+45,30,30));
+	}
+
+	public void drawHitch(Graphics2D g) {
+		g.setPaint(Color.black);
+		g.fill(new Rectangle2D.Double(getXStart()+100,getYStart()+55,10,5));
+	}
