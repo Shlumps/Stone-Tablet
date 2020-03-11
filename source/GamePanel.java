@@ -56,6 +56,7 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
             public void mousePressed(MouseEvent e) { // called on press
                 updateMousePosition(e);
                 updateMousePressed(e);
+                onClickUpdateAll();
             }
 
             @Override
@@ -83,12 +84,12 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
         });
 
         initializeStartingEntities();
-        
+
         Timer timer = new Timer("Ticker"); // Logical Updates, timer class is a lifesaver
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                logicalUpdateAll();
+                logicalUpdateAll(); // timers are thread-safe, so no need to worry about memory consistency errors
             }
         }, 0, tickSpeed);
 
@@ -149,17 +150,12 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
     public boolean isKeyPressed() {
         return !keysDown.isEmpty();
     }
-    
+
     public boolean isButtonPressed(int button) {
         return mouseButtonsDown.contains(Integer.valueOf(button));
     }
 
     // ENTITY METHODS
-    public void initializeStartingEntities() {
-        // <add your starting entities here>
-        entities.add(new Player(this,400,400));
-    }
-
     public void passiveUpdateAll(Graphics2D g) {
         for(GameEntity i : entities) {
             i.passiveUpdate(g);
@@ -172,6 +168,16 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
         }
     }
 
+    public void onClickUpdateAll() {
+        for(GameEntity i : entities) {
+            i.onClickUpdate();
+        }
+    }
+    // THE STUFF OTHER PEOPLE NEED TO WORRY ABOUT.......................................................................
+    public void initializeStartingEntities() {
+        // <add your starting entities here>
+    }
+
     // GRAPHICAL UPDATES
     @Override
     public void paintComponent(Graphics graphics) { // graphical and passive updates are called here, called on repaint
@@ -181,6 +187,7 @@ public class GamePanel extends JPanel implements MouseMotionListener { // class 
                 RenderingHints.VALUE_ANTIALIAS_ON)); // turns on antialiasing
         passiveUpdateAll(g);
     }
+    //..................................................................................................................
 
     // ACCESSORS
     public int getMouseX() {return mouseX;}
