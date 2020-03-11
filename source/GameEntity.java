@@ -1,48 +1,29 @@
-package Stuff;
+import java.awt.Graphics2D;
 
-import java.awt.*;
-import java.awt.geom.*;
+public abstract class GameEntity {
 
-public class GameEntity {
-	
-	// FIELDS
-	private GamePanel game;
-	private String name;
-	
-	private boolean isSelected;
-	private double xPos;
-	private double yPos;
-	
-	// CONSTRUCTORS
-	public GameEntity(GamePanel game, String name) {
-		this.game = game;
-		this.name = name;
-	}
-	
-	public GameEntity(GamePanel game, String name, double xPos, double yPos) {
-		this(game, name);
-		this.xPos = xPos;
-		this.yPos = yPos;
-	}
+    // fields
+    protected GamePanel game;
+    protected double xPos;
+    protected double yPos;
 
-	
-	public void passiveUpdate(Graphics2D g) {
-		// INPUT STUFF
-		if(game.isKeyPressed(87)) { // W
-			yPos -= .1;
-		}
-		if(game.isKeyPressed(65)) { // A
-			xPos -= .1;
-		}
-		if(game.isKeyPressed(83)) { // S
-			yPos += .1;
-		}
-		if(game.isKeyPressed(68)) { // D
-			xPos += .1;
-		}
-		
-		// GRAPHICAL
-		g.setPaint(new Color(255,0,0));
-		g.draw(new Rectangle2D.Double(xPos-5, yPos-5, 10, 10));
-	}
+    // constructors
+    public GameEntity(GamePanel game, double xPos, double yPos) {
+        this.game = game;
+        this.xPos = xPos;
+        this.yPos = yPos;
+    }
+
+    // abstract methods
+    public abstract void passiveUpdate(Graphics2D g); // called on repaint()
+    public abstract void logicalUpdate(); // called every game tick
+    public abstract void onClickUpdate(); // called on mouse click
+
+    // getters
+    public double getxPos() {return xPos;}
+    public double getyPos() {return yPos;}
+
+    // setters
+    public void setxPos(double xPos) {this.xPos = xPos;}
+    public void setyPos(double yPos) {this.yPos = yPos;}
 }
